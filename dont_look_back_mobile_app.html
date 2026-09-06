@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>DON'T LOOK BACK</title>
+<style>
+:root{--red:#e31313;--dark:#050607}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--dark);color:#fff;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+body{touch-action:none}
+button{font:inherit;color:inherit;-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.screen{position:fixed;inset:0;display:none;overflow:hidden}.screen.active{display:block}
+#home{background:radial-gradient(ellipse at 75% 43%,#2a3940 0,#11191d 27%,#030405 72%)}
+#home:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#000 0 38%,#0004 60%,#0008)}
+#home:after{content:"";position:absolute;right:8%;top:20%;width:55px;height:165px;background:#010202;border-radius:50% 50% 15% 15%;box-shadow:0 0 35px #000}
+.homeLight{position:absolute;right:23%;top:9%;width:23%;height:8px;background:#dff1f5;box-shadow:0 0 35px #dff1f5}
+.logo{position:absolute;z-index:2;left:5%;top:9%;font-size:clamp(48px,9vw,100px);line-height:.8;font-weight:1000;letter-spacing:-4px;text-shadow:4px 4px #000}
+.logo span{display:block;color:var(--red)}
+.tag{position:absolute;z-index:2;left:5%;top:30%;color:#aaa;letter-spacing:2px}
+.menu{position:absolute;z-index:20;left:5%;top:38%;width:min(390px,44vw);min-width:255px}
+.menu button,.action{display:block;width:100%;height:58px;margin:10px 0;border:1px solid #666;border-radius:7px;background:linear-gradient(#25282b,#0b0d0f);font-weight:900;font-size:18px;letter-spacing:1px;box-shadow:0 6px 20px #0008}
+.menu .primary,.action.primary{background:linear-gradient(#df1b1b,#710000);border-color:#ff5b5b}
+.menu button:active,.action:active,.control:active{transform:scale(.97)}
+#sub{background:radial-gradient(circle at 50% 45%,#1b282e,#030405 70%)}
+.panel{position:absolute;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%);width:min(600px,90vw);padding:28px;background:#07090bf5;border:1px solid #555;border-radius:14px;box-shadow:0 25px 80px #000}
+.panel h1{margin:0 0 12px;font-size:clamp(34px,7vw,60px);line-height:.95}.panel p{color:#aaa;line-height:1.5}
+#game{background:#050708}
+#hall{position:absolute;inset:0;background:linear-gradient(90deg,#020304 0 13%,transparent 13% 87%,#020304 87%),linear-gradient(#07090a 0 30%,#20292c 30% 33%,#111618 33% 68%,#050607 68%)}
+#hall:before{content:"";position:absolute;left:13%;right:13%;bottom:0;height:57%;background:repeating-linear-gradient(0deg,#15191b 0 7%,#080a0b 7.5% 8%);transform:perspective(650px) rotateX(48deg);transform-origin:bottom}
+.gameLight{position:absolute;left:50%;top:8%;transform:translateX(-50%);width:25%;height:8px;background:#dff1f5;box-shadow:0 0 35px #dff1f5}
+.door{position:absolute;top:35%;width:10%;height:27%;background:#090b0c;border:3px solid #242a2c}.leftDoor{left:17%}.rightDoor{right:17%}
+#monster{position:absolute;left:50%;top:39%;width:50px;height:150px;background:#010202;border-radius:45%;transform:translateX(-50%) scale(.45);box-shadow:0 0 20px #000;transition:transform .2s}
+#monster:before,#monster:after{content:"";position:absolute;top:30px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}#monster:before{left:11px}#monster:after{right:11px}
+.hud{position:absolute;z-index:10;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;font-weight:900;text-shadow:0 2px 10px #000}
+#fearBox{position:absolute;z-index:10;top:50px;left:18px;width:190px;height:9px;background:#222;border-radius:10px}#fear{height:100%;width:0;background:#d20d0d;border-radius:10px}
+#message{position:absolute;z-index:10;top:18%;left:50%;transform:translateX(-50%);width:92%;text-align:center;font-size:clamp(20px,5vw,34px);font-weight:900;text-shadow:0 2px 14px #000}
+.control{position:absolute;z-index:20;bottom:25px;border:2px solid #777;background:#0b1012e8;color:#fff;font-weight:900;box-shadow:0 6px 25px #000}
+#run{left:20px;width:155px;height:100px;border-radius:18px}#look{right:20px;width:112px;height:112px;border-radius:60px}
+#gameMenu{left:18px;top:70px;padding:10px 14px;border-radius:8px}
+#result{display:none;position:absolute;z-index:50;inset:0;background:#000d;align-items:center;justify-content:center;padding:22px}.resultPanel{position:relative;left:auto;top:auto;transform:none;text-align:center}
+</style>
+</head>
+<body>
+
+<section id="home" class="screen active">
+<div class="homeLight"></div>
+<div class="logo">DON'T <span>LOOK BACK</span></div>
+<div class="tag">SOMETHING IS BEHIND YOU...</div>
+<div class="menu">
+<button id="play" class="primary" type="button">PLAY</button>
+<button id="solo" type="button">SOLO</button>
+<button id="multi" type="button">MULTIPLAYER</button>
+<button id="settings" type="button">SETTINGS</button>
+<button id="quit" type="button">QUIT</button>
+</div>
+</section>
+
+<section id="sub" class="screen">
+<div class="panel"><h1 id="subTitle"></h1><p id="subText"></p><div id="subButtons"></div></div>
+</section>
+
+<section id="game" class="screen">
+<div id="hall"><div class="gameLight"></div><div class="door leftDoor"></div><div class="door rightDoor"></div><div id="monster"></div></div>
+<div class="hud"><span id="distance">DISTANCE: 100m</span><span id="clock">03:00</span></div>
+<div id="fearBox"><div id="fear"></div></div>
+<div id="message">KEEP MOVING. DON'T LOOK BACK.</div>
+<button id="gameMenu" class="control" type="button">MENU</button>
+<button id="run" class="control" type="button">HOLD TO RUN</button>
+<button id="look" class="control" type="button">LOOK<br>BACK</button>
+<div id="result"><div class="panel resultPanel"><h1 id="resultTitle"></h1><p id="resultText"></p><button id="again" class="action primary" type="button">PLAY AGAIN</button><button id="mainMenu" class="action" type="button">MAIN MENU</button></div></div>
+</section>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var screens=document.querySelectorAll(".screen");
+function show(id){for(var i=0;i<screens.length;i++)screens[i].classList.remove("active");$(id).classList.add("active");}
+var timer=null,eventTimer=null,running=false,distance=100,fear=0,seconds=180;
+
+function update(){
+$("distance").textContent="DISTANCE: "+Math.ceil(distance)+"m";
+$("clock").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");
+$("fear").style.width=Math.min(100,fear)+"%";
+$("monster").style.transform="translateX(-50%) scale("+(0.45+(100-distance)*0.007)+")";
+}
+function stop(){clearInterval(timer);clearTimeout(eventTimer);timer=null;eventTimer=null;running=false;}
+function start(){
+stop();show("game");$("result").style.display="none";distance=100;fear=0;seconds=180;
+$("message").textContent="KEEP MOVING. DON'T LOOK BACK.";update();
+timer=setInterval(tick,1000);scheduleEvent();
+}
+function tick(){
+if(running){distance-=0.7;fear=Math.max(0,fear-0.2);}else{fear=Math.min(100,fear+0.45);}
+seconds--;
+if(distance<=0)return finish("YOU ESCAPED.","You reached the safe room without looking back.");
+if(fear>=100)return finish("IT SAW YOU.","You looked back one time too many.");
+if(seconds<=0)return finish("TIME IS UP.","The lights go out. Something is breathing behind you.");
+update();
+}
+function finish(title,text){stop();$("resultTitle").textContent=title;$("resultText").textContent=text;$("result").style.display="flex";}
+function scheduleEvent(){
+eventTimer=setTimeout(function(){
+if(!$("game").classList.contains("active"))return;
+var events=["FOOTSTEPS ARE GETTING CLOSER.","A DOOR JUST OPENED BEHIND YOU.","THE LIGHTS ARE FAILING.","SOMETHING WHISPERED YOUR NAME.","DON'T LOOK BACK."];
+$("message").textContent=events[Math.floor(Math.random()*events.length)];
+fear=Math.min(100,fear+12);update();scheduleEvent();
+},6000+Math.random()*7000);
+}
+function makeButton(text,fn,primary){
+var b=document.createElement("button");b.type="button";b.className="action"+(primary?" primary":"");b.textContent=text;
+b.addEventListener("click",fn);b.addEventListener("touchend",function(e){e.preventDefault();fn();},{passive:false});return b;
+}
+function openPanel(title,text,items){
+$("subTitle").textContent=title;$("subText").textContent=text;$("subButtons").innerHTML="";
+items.forEach(function(item){$("subButtons").appendChild(makeButton(item.text,item.fn,item.primary));});show("sub");
+}
+
+$("play").onclick=function(){openPanel("HOW DO YOU WANT TO PLAY?","Choose your game mode.",[
+{text:"SOLO",primary:true,fn:start},
+{text:"CREATE GAME",fn:function(){openPanel("CREATE GAME","Room code: D4K9Q. Share it with your friends.",[{text:"START GAME",primary:true,fn:start},{text:"BACK",fn:function(){show("home");}}]);}},
+{text:"JOIN GAME",fn:function(){openPanel("JOIN GAME","Demo room code: D4K9Q.",[{text:"JOIN & PLAY",primary:true,fn:start},{text:"BACK",fn:function(){show("home");}}]);}},
+{text:"BACK",fn:function(){show("home");}}
+]);};
+$("solo").onclick=start;
+$("multi").onclick=function(){openPanel("MULTIPLAYER","Play with up to 6 players.",[{text:"CREATE GAME",primary:true,fn:start},{text:"JOIN GAME",fn:start},{text:"BACK",fn:function(){show("home");}}]);};
+$("settings").onclick=function(){openPanel("SETTINGS","Game settings.",[
+{text:"SOUND: ON",fn:function(e){e.currentTarget.textContent=e.currentTarget.textContent.indexOf("ON")>-1?"SOUND: OFF":"SOUND: ON";}},
+{text:"SCREEN SHAKE: ON",fn:function(e){e.currentTarget.textContent=e.currentTarget.textContent.indexOf("ON")>-1?"SCREEN SHAKE: OFF":"SCREEN SHAKE: ON";}},
+{text:"BACK",fn:function(){show("home");}}
+]);};
+$("quit").onclick=function(){openPanel("QUIT","Are you sure you want to leave?",[{text:"STAY",primary:true,fn:function(){show("home");}}]);};
+$("gameMenu").onclick=function(){stop();show("home");};
+$("again").onclick=start;
+$("mainMenu").onclick=function(){stop();show("home");};
+
+function press(e){e.preventDefault();running=true;}
+function release(e){if(e)e.preventDefault();running=false;}
+$("run").addEventListener("touchstart",press,{passive:false});
+$("run").addEventListener("touchend",release,{passive:false});
+$("run").addEventListener("touchcancel",release,{passive:false});
+$("run").addEventListener("mousedown",press);
+$("run").addEventListener("mouseup",release);
+$("run").addEventListener("mouseleave",release);
+$("look").onclick=function(){fear=Math.min(100,fear+38);distance=Math.max(0,distance-4);$("message").textContent=fear>=100?"IT SAW YOU.":"DON'T LOOK BACK.";update();};
+update();
+})();
+</script>
+</body>
+</html>
